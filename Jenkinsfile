@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = "image-registry.openshift-image-registry.svc:5000"
+        PROJECT = "aedingbo-dev"
+        IMAGE_NAME = "order-api"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-username/order-api.git'
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                sh 'mvn clean package'  // Replace with your build command if different
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh """
+                oc start-build ${IMAGE_NAME} --from-dir=. --follow
+                """
+            }
+        }
+
+        stage('Deploy to OpenShift') {
+            steps {
+                sh """
+                oc rollout latest dc/${IMAGE_NAME}
+                """
+            }
+        }
+    }
+}
