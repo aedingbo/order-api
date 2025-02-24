@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-username/order-api.git'
+                git branch: 'main', url: 'https://github.com/aedingbo/order-api.git'
             }
         }
 
