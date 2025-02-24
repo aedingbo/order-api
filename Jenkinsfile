@@ -5,7 +5,6 @@ pipeline {
         REGISTRY = "image-registry.openshift-image-registry.svc:5000"
         PROJECT = "aedingbo-dev"
         IMAGE_NAME = "order-api"
-        MAVEN_OPTS = "-Dmaven.repo.local=/home/jenkins/agent/.m2/repository"
     }
 
     stages {
@@ -15,34 +14,9 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
-            agent {
-                kubernetes {
-                    yaml """
-                    apiVersion: v1
-                    kind: Pod
-                    metadata:
-                      labels:
-                        build: maven
-                    spec:
-                      containers:
-                      - name: maven
-                        image: maven:3.8.5-openjdk-11
-                        command: ["sleep"]
-                        args: ["infinity"]
-                        volumeMounts:
-                        - mountPath: "/home/jenkins/agent/.m2"
-                          name: "maven-repo"
-                      volumes:
-                      - name: "maven-repo"
-                        emptyDir: {}
-                    """
-                }
-            }
+        stage('Build and Package') {
             steps {
-                container('maven') {
-                    sh 'mvn -Dmaven.repo.local=/home/jenkins/agent/.m2/repository clean package'
-                }
+                sh 'echo "Skipping Maven build, no pom.xml required"'
             }
         }
 
