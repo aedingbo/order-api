@@ -15,8 +15,13 @@ pipeline {
         }
 
         stage('Build and Test') {
+            agent {
+                docker {
+                    image 'maven:3.8.5-openjdk-11'  // Use Maven Docker container
+                }
+            }
             steps {
-                sh 'mvn clean package'  // Replace with your build command if different
+                sh 'mvn clean package'  // Build the application inside the Maven container
             }
         }
 
