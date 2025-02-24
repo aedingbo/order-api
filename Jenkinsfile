@@ -31,7 +31,8 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 sh """
-                sh "oc rollout restart deployment/${IMAGE_NAME}"
+                 #!/bin/bash
+        oc rollout restart deployment/${IMAGE_NAME}
                 """
             }
         }
