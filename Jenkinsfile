@@ -5,6 +5,7 @@ pipeline {
         REGISTRY = "image-registry.openshift-image-registry.svc:5000"
         PROJECT = "aedingbo-dev"
         IMAGE_NAME = "order-api"
+        MAVEN_OPTS = "-Dmaven.repo.local=/home/jenkins/agent/.m2/repository"
     }
 
     stages {
@@ -29,12 +30,18 @@ pipeline {
                         image: maven:3.8.5-openjdk-11
                         command: ["sleep"]
                         args: ["infinity"]
+                        volumeMounts:
+                        - mountPath: "/home/jenkins/agent/.m2"
+                          name: "maven-repo"
+                      volumes:
+                      - name: "maven-repo"
+                        emptyDir: {}
                     """
                 }
             }
             steps {
                 container('maven') {
-                    sh 'mvn clean package'
+                    sh 'mvn -Dmaven.repo.local=/home/jenkins/agent/.m2/repository clean package'
                 }
             }
         }
