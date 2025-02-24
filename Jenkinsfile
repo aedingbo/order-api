@@ -16,12 +16,26 @@ pipeline {
 
         stage('Build and Test') {
             agent {
-                docker {
-                    image 'maven:3.8.5-openjdk-11'  // Use Maven Docker container
+                kubernetes {
+                    yaml """
+                    apiVersion: v1
+                    kind: Pod
+                    metadata:
+                      labels:
+                        build: maven
+                    spec:
+                      containers:
+                      - name: maven
+                        image: maven:3.8.5-openjdk-11
+                        command: ["sleep"]
+                        args: ["infinity"]
+                    """
                 }
             }
             steps {
-                sh 'mvn clean package'  // Build the application inside the Maven container
+                container('maven') {
+                    sh 'mvn clean package'
+                }
             }
         }
 
